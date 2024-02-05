@@ -1,8 +1,8 @@
 from model import GTM, ChainMutation
 
 # filename
-filename = "fiction-stories" # dont add extension
-trainingset_name = 'fiction-stories.txt' # add extension
+filename = "story-teller" # dont add extension
+trainingset_name = 'story-teller.txt' # add extension
 
 # Create an instance of the GTM class
 orderValue = 5
@@ -10,13 +10,13 @@ markov_chain = GTM(order=orderValue)
 
 # Train the Markov chain on a sequence
 def import_file(filename):
-    with open(f"./data/{filename}", 'r') as file:
+    with open(f"./data/{filename}", 'r', encoding="utf-8") as file:
         file_contents = file.read()
     return file_contents
 
 # Example usage
 sequence = import_file(trainingset_name);
-markov_chain.train(sequence, iterations=15)
+markov_chain.train(sequence, iterations=8)
 
 # Save the Markov chain to a file
 

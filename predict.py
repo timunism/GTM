@@ -17,18 +17,25 @@ markov_chain = GTM(order=5)
 # Load the Markov chain from the file
 markov_chain.load(filename)
 
-output = [];
-seed = 0;
+# import encode map to use for decoding generate sequence
+encodeMap = open('./data/map.json');
+mapper = json.load(encodeMap);
 
-generated_sequence = markov_chain.generate_sequence(length=150, seed=seed)
+output = [];
+seed = "The";
+seed = encoder.infer(seed, mapper);
+
+if seed != None and len(seed) > 0:
+    print('>> Seed',seed)
+    generated_sequence = markov_chain.generate_sequence(length=150, seed=seed)
+else:
+    print('>> Using Random Generated Seed')
+    seed = None
+    generated_sequence = markov_chain.generate_sequence(length=150, seed=seed)
 
 # retrieve individual words from the sequence and append them to the output
 for encodedValue in generated_sequence:
     output.append(encodedValue)
-
-# import encode map to use for decoding generate sequence
-encodeMap = open('./data/map.json');
-mapper = json.load(encodeMap);
 
 # decode output
 output = encoder.decode(output, mapper);

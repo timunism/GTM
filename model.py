@@ -95,6 +95,7 @@ class GTM:
     def __init__(self, order):
         self.order = order # number of tokens to consider when predicting
         self.chain = defaultdict(list) # this is where the transitions are stored
+		# defaultdict is much faster than standard dict
 
     # training function
     def train(self, sequence, iterations):
@@ -130,19 +131,45 @@ class GTM:
 
     # generate new sequence
     def generate_sequence(self, length, seed):
-        # pick a state at random (returns a tuple)
-        current_state = random.choice(list(self.chain.keys()));
+        # A robust function for infering from the model, regardless of its order
+        def infer():
+            possible_keys = []
+            for key in self.chain.keys():
+                # if key in chain contains all the words from the seed
+                if all(char in key for char in seed):
+                    # append key to possible states
+                    possible_keys.append(key)
 
-        """initialize the sequence to generate, with the retrieved state
-           as the starting point
+            return possible_keys;
+
+        # if seed is provided
+        if seed != None:
+            possible_states = infer();
+            # use its values to approximate a current_state
+            seed = tuple(seed)
+            current_state = random.choice(possible_states) # infer current state from dictionary
+            #print('Current State:',current_state)
+        else:
+            # pick a state at random (returns a tuple)
+            current_state = random.choice(list(self.chain.keys()));
+
+        """The current state is where the 'Random Walk' starts. And the final sequence
+           is a combination of the current state and all the tokens generated,
+           during the random walk.
         """
         sequence = list(current_state) # convert to a mutable list
-        
 
-        for i in range(length - len(sequence)):
+		# Do a random walk, while in the range of provided length
+		# I'm subtracting the length of the seed from the generated tokens inorder to get an output of provided length
+		# i.e. output_length = provided_length; since(provided_length = generated_sequence_length + seed_length)
+        for i in range(length - len(sequence)):			
             if current_state in self.chain:
+				# pick next token at random from the possible transitions of the current state
                 next_token = random.choice(self.chain[current_state]);
+				# and appended it to the sequence
                 sequence.append(next_token)
+				# then set the current state to be the first previous x tokens of the current sequence
+				# where x = Markov Order (number)
                 current_state = tuple(sequence[-self.order:])
             else:
                 break
