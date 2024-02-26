@@ -1,4 +1,4 @@
-from model import GTM, ChainMutation
+from model import GTM
 
 # filename
 filename = "story-teller" # dont add extension
@@ -16,7 +16,7 @@ def import_file(filename):
 
 # Example usage
 sequence = import_file(trainingset_name);
-markov_chain.train(sequence, iterations=8)
+markov_chain.train(sequence)
 
 # Save the Markov chain to a file
 
