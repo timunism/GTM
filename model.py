@@ -29,64 +29,6 @@ import random
 from encoder import Encoder
 from collections import defaultdict
 
-"""
-Re-arranging the dataset programmatically helps
-improve the model's ability to establish relationships between words,
-especially if the dataset does not have a natural or explicit sequential order.
-
-iterations => number of times to mutate the dataset
-
-more, may or may not always be better, so you just mess around with the count until
-you get an optimal performance
-"""
-class ChainMutation:
-    def __init__(self):
-        pass
-
-    # This function re-arranges the dataset, so may not be suitable for accurate dataset to output mapping
-    # It excels in generative applications, where the goal is to generate new text
-    def constructive(self, tokens, iterations, save):
-        output = []
-        sequenceA = [];
-        sequenceB = [];
-        sequenceC = [];
-
-        # the dataset is split into 3 small datasets (sets)
-        for i in range(len(tokens)):
-            if i < len(tokens)//3 and i < len(tokens)//2:
-                sequenceB.append(tokens[i])
-            elif i > len(tokens)//3 and i < len(tokens)//2:
-                sequenceA.append(tokens[i])
-            elif i > len(tokens)//2 and i < len(tokens):
-                sequenceC.append(tokens[i])
-
-        # these small datasets are then rearranged:
-        # set(1)->set(2)->set(3)->set(2)->set(3)->set(1)->set(2)->set(3)
-        for x in range(iterations):
-            output.append(sequenceA)
-            output.append(sequenceB)
-            output.append(sequenceC)
-            output.append(sequenceB)
-            output.append(sequenceC)
-            output.append(sequenceA)
-            output.append(sequenceB)
-            output.append(sequenceC)
-            print(f"\riterations: {x+1}",end='', flush=True)
-        
-        print('\n')
-        if save:
-            print('Saving Constructed Data')
-            file = open('data/constructed_training_data.txt', 'w')
-            file.write(output)
-
-        new_set = []
-        for array in output:
-            for i in array:
-                new_set.append(i)
-
-
-        return new_set
-
 encode = Encoder()
 
 # This is where the magic happens
@@ -97,7 +39,7 @@ class GTM:
 		# defaultdict is much faster than standard dict
 
     # training function
-    def train(self, sequence, iterations):
+    def train(self, sequence):
         tokens = sequence.split(' ') # split sequence into tokens
         print('Encoding...')
         tokens = encode.words(tokens, tokens); # encode tokens
