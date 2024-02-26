@@ -88,7 +88,6 @@ class ChainMutation:
         return new_set
 
 encode = Encoder()
-chain_mutation = ChainMutation();
 
 # This is where the magic happens
 class GTM:
