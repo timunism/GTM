@@ -102,9 +102,7 @@ class GTM:
         tokens = sequence.split(' ') # split sequence into tokens
         print('Encoding...')
         tokens = encode.words(tokens, tokens); # encode tokens
-        print('Staging...')
-        tokens = chain_mutation.constructive(tokens=tokens, iterations=iterations, save=False)
-        
+	    
         print('Training...')
         # generate key => value dictionary (chain)
         for i in range(len(tokens) - self.order):
